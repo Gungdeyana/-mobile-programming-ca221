@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WhatsApp Clone',
+      title: 'WhatsApp',
       theme: ThemeData(
         primaryColor: const Color(0xFF075E54),
         colorScheme: ColorScheme.fromSwatch().copyWith(
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color(0xFF075E54),
         ),
       ),
-      home: WhatsAppHome(),
+      home: const WhatsAppHome(),
     );
   }
 }
@@ -29,17 +29,23 @@ class WhatsAppHome extends StatefulWidget {
   const WhatsAppHome({super.key});
 
   @override
-  _WhatsAppHomeState createState() => _WhatsAppHomeState();
+  State<WhatsAppHome> createState() => _WhatsAppHomeState();
 }
 
 class _WhatsAppHomeState extends State<WhatsAppHome>
     with SingleTickerProviderStateMixin {
-  TabController? _tabController;
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,22 +58,23 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
           IconButton(
             icon: const Icon(Icons.camera_alt),
             onPressed: () {
-              // Aksi untuk kamera
+              // Ikon untuk kamera
             },
           ),
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // Aksi untuk pencarian
+              // Ikon untuk pencarian
             },
           ),
           IconButton(
             icon: const Icon(Icons.more_vert), // Ikon titik tiga
             onPressed: () {
-              // Aksi untuk menu lainnya
+              // Ikon untuk menu lainnya
             },
           ),
         ],
+        // Tampilan TabBar
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.white,
@@ -80,12 +87,9 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          // Tab 1: Chats
+        children: const [
           ChatsTab(),
-          // Tab 2: Status
           StatusTab(),
-          // Tab 3: Calls
           CallsTab(),
         ],
       ),
@@ -99,28 +103,73 @@ class _WhatsAppHomeState extends State<WhatsAppHome>
     );
   }
 }
-
+// Tampilan ChatsTab
 class ChatsTab extends StatelessWidget {
   const ChatsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Daftar objek kontak yang berbeda
+   final List<Map<String, dynamic>> chats = [
+      {
+        'name': 'Gungde',
+        'lastMessage': 'Udah ngirim tugas?',
+        'time': '12:00 PM',
+      },
+      {
+        'name': 'Agus',
+        'lastMessage': 'Ayo gas mabar emel?',
+        'time': '11:30 AM'
+      },
+      {
+        'name': 'Wira', 
+        'lastMessage': 'Telpon aku kalau kelas udh dimulai',
+        'time': '10:15 AM'
+        },
+      {
+        'name': 'Gung Mayun',
+        'lastMessage': 'Bantu instalin PS?',
+        'time': '9:45 AM'
+        },
+      {
+        'name': 'Surya',
+        'lastMessage': 'Makasi ya',
+        'time': 'Yesterday, 4:30 PM'
+        },
+      {
+        'name': 'Dimas',
+        'lastMessage': 'Kelompok sama siapa?',
+        'time': 'Yesterday, 3:00 PM'
+        },
+      {
+        'name': 'Afif',
+        'lastMessage': 'Oke sip',
+        'time': '2 days ago'
+        },
+      {
+        'name': 'Febri',
+        'lastMessage': 'Males nok',
+        'time': '3 days ago'},
+    ];
+
     return ListView.builder(
-      itemCount: 10,
+      itemCount: chats.length,
       itemBuilder: (context, index) {
         return ListTile(
           leading: const CircleAvatar(
             backgroundColor: Colors.grey,
             child: Icon(Icons.person, color: Colors.white),
           ),
-          title: Text('Nama Kontak $index'),
-          subtitle: const Text('Pesan terakhir dari kontak ini'),
-          trailing: const Text('12:00 PM'),
+          title: Text(chats[index]['name']!), // Menggunakan daftar dari nama
+          subtitle: Text(chats[index]['lastMessage']!), // Menggunakan pesan terakhir
+          trailing: Text(chats[index]['time']!), // Menggunakan waktu pesan
         );
       },
     );
   }
 }
+
+
 
 class StatusTab extends StatelessWidget {
   const StatusTab({super.key});
@@ -134,8 +183,8 @@ class StatusTab extends StatelessWidget {
             backgroundColor: Colors.green,
             child: Icon(Icons.add, color: Colors.white),
           ),
-          title: Text('Status Saya'),
-          subtitle: Text('Tap untuk menambahkan status'),
+          title: Text('My Status'),
+          subtitle: Text('Tap to add status update'),
         ),
         Divider(),
         ListTile(
@@ -143,16 +192,16 @@ class StatusTab extends StatelessWidget {
             backgroundColor: Colors.grey,
             child: Icon(Icons.person, color: Colors.white),
           ),
-          title: Text('Status Kontak 1'),
-          subtitle: Text('20 menit yang lalu'),
+          title: Text('Dimas'),
+          subtitle: Text('25 minutes ago'),
         ),
         ListTile(
           leading: CircleAvatar(
             backgroundColor: Colors.grey,
             child: Icon(Icons.person, color: Colors.white),
           ),
-          title: Text('Status Kontak 2'),
-          subtitle: Text('1 jam yang lalu'),
+          title: Text('Febri'),
+          subtitle: Text('54 minutes ago'),
         ),
       ],
     );
@@ -171,12 +220,12 @@ class CallsTab extends StatelessWidget {
             backgroundColor: Colors.grey,
             child: Icon(Icons.person, color: Colors.white),
           ),
-          title: const Text('Panggilan 1'),
+          title: const Text('Wira'),
           subtitle: const Row(
             children: [
               Icon(Icons.call_made, color: Colors.green, size: 16),
               SizedBox(width: 5),
-              Text('Hari ini, 09:00 AM'),
+              Text('Today, 12:00 PM'),
             ],
           ),
           trailing: Icon(Icons.call, color: Theme.of(context).primaryColor),
@@ -186,12 +235,12 @@ class CallsTab extends StatelessWidget {
             backgroundColor: Colors.grey,
             child: Icon(Icons.person, color: Colors.white),
           ),
-          title: const Text('Panggilan 2'),
+          title: const Text('Gung Mayun'),
           subtitle: const Row(
             children: [
               Icon(Icons.call_received, color: Colors.red, size: 16),
               SizedBox(width: 5),
-              Text('Kemarin, 08:00 PM'),
+              Text('Yesterday, 10:00 AM'),
             ],
           ),
           trailing: Icon(Icons.videocam, color: Theme.of(context).primaryColor),
